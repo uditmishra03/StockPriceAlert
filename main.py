@@ -53,7 +53,7 @@ delta_percent = round(closing_delta / yesterday_closing * 100, 2)
 # print(delta_percent)
 
 if delta_percent > 5:
-    # print(f"{news_params['q']}{mkt_direction}{delta_percent}%")
+    print(f"{news_params['q']}{mkt_direction}{delta_percent}%")
 
     news_response = requests.get(NEWS_ENDPOINT, params=news_params)
     news_response.raise_for_status()
@@ -70,7 +70,7 @@ if delta_percent > 5:
             .create(
             body=f"{news_params['q']}{mkt_direction}{delta_percent}%\n{sr_num}.Headline: {each['title']}\nBrief: {each['description']}\n",
             from_=PHONE_NUM,
-            to="+919886605789"
+            to="+91 81058 06082"
         )
         sr_num += 1
         print(message.status)
