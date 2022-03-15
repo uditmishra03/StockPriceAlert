@@ -14,16 +14,17 @@ account_sid = "ACf21e6506da5233d77a936d156f5890db"
 PHONE_NUM = "+17627603600"
 
 newsapi_key = "073f56d1aab84054abd24e5a1a42711d"
-alphavantage_api_key = "YBUXLP9Z47UWWDY8"
+STOCK_API_KEY = "YBUXLP9Z47UWWDY8"
 
 stock_param = {
     "function": "TIME_SERIES_DAILY",
-    "symbol": "TSLA",
-    "apikey": alphavantage_api_key,
+    "symbol": STOCK ,
+    "apikey": STOCK_API_KEY,
 }
 
 news_params = {
-    "q": "TSLA",
+    "qInTitle": STOCK,
+    "searchIn": "title",
     "apiKey": newsapi_key,
 }
 
@@ -33,16 +34,21 @@ news_params = {
 daily_closings = []
 stock_response = requests.get(STOCK_ENDPOINT, params=stock_param)
 stock_response.raise_for_status()
-stock_data = stock_response.json()
-for each in stock_data['Time Series (Daily)']:
-    daily_closings.append(float(stock_data['Time Series (Daily)'][each]["4. close"]))
+stock_data = stock_response.json()['Time Series (Daily)']
+stock_data_list = [value for (key, value) in stock_data.items()]  # List comprehension. Stock_data is a dictionary.
+# print(stock_data_list)
+for each in stock_data_list:
+    daily_closings.append(float(each["4. close"]))
 
 # HINT 2: Work out the value of 5% of yesterday's closing stock price.
+
 yesterday_closing = daily_closings[0]
 day_b4_yesterday_closing = daily_closings[1]
+# print(yesterday_closing, day_b4_yesterday_closing)
 
 closing_delta = yesterday_closing - day_b4_yesterday_closing
 closing_delta = abs(round(closing_delta, 2))
+# print(closing_delta)
 
 if yesterday_closing > day_b4_yesterday_closing:
     mkt_direction = "🔺"
@@ -52,8 +58,8 @@ else:
 delta_percent = round(closing_delta / yesterday_closing * 100, 2)
 # print(delta_percent)
 
-if delta_percent > 5:
-    print(f"{news_params['q']}{mkt_direction}{delta_percent}%")
+if delta_percent > 2:
+    print(f"{news_params['qInTitle']}{mkt_direction}{delta_percent}%")
 
     news_response = requests.get(NEWS_ENDPOINT, params=news_params)
     news_response.raise_for_status()
@@ -68,7 +74,7 @@ if delta_percent > 5:
         client = Client(account_sid, auth_token)
         message = client.messages \
             .create(
-            body=f"{news_params['q']}{mkt_direction}{delta_percent}%\n{sr_num}.Headline: {each['title']}\nBrief: {each['description']}\n",
+            body=f"{news_params['qInTitle']}{mkt_direction}{delta_percent}%\n{sr_num}.Headline: {each['title']}\nBrief: {each['description']}\n",
             from_=PHONE_NUM,
             to="+91 81058 06082"
         )
