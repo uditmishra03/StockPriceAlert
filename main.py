@@ -76,7 +76,7 @@ if delta_percent > 2:
             .create(
             body=f"{news_params['qInTitle']}{mkt_direction}{delta_percent}%\n{sr_num}.Headline: {each['title']}\nBrief: {each['description']}\n",
             from_=PHONE_NUM,
-            to="+91 81058 06082"
+            to="+91 8150000000"
         )
         sr_num += 1
         print(message.status)
